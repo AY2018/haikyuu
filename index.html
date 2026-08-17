@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#faf9f7">
+<title>Haikyuu!! Genius Omni-System — Reader</title>
+<link rel="stylesheet" href="assets/css/reader.css">
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
+
+<header class="topbar" id="topbar">
+  <button class="icon-btn" id="tocBtn" title="Chapters (t)" aria-label="Chapters">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+  </button>
+
+  <div class="topbar__title">
+    <strong id="chapterLabel">Loading…</strong>
+    <small id="chapterMeta"></small>
+  </div>
+
+  <button class="icon-btn" id="bookmarkBtn" title="Bookmark this spot (b)" aria-label="Bookmark this spot">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4z"/></svg>
+  </button>
+  <button class="icon-btn" id="settingsBtn" title="Display settings (s)" aria-label="Display settings">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="17" text-anchor="middle" font-size="15" font-family="Georgia, serif" stroke="none" fill="currentColor">Aa</text></svg>
+  </button>
+</header>
+
+<main id="reader">
+  <article id="chapter"></article>
+
+  <nav class="chapter-nav" id="chapterNav">
+    <button class="nav-btn" id="prevBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      <span>Previous</span>
+    </button>
+    <button class="nav-btn" id="nextBtn">
+      <span>Next</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </nav>
+  <section class="lock-card" id="lockCard" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="9" rx="2"/>
+      <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+    </svg>
+    <h2>That's today's reading</h2>
+    <p id="lockText"></p>
+  </section>
+
+  <p class="end-note" id="endNote"></p>
+</main>
+
+<button class="fab" id="topFab" title="Back to top" aria-label="Back to top" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+</button>
+
+<!-- Chapters / bookmarks drawer -->
+<aside class="panel panel--left" id="tocPanel" aria-hidden="true" aria-label="Chapters and bookmarks">
+  <div class="panel__head">
+    <div class="tabs" role="tablist">
+      <button class="tab is-active" id="tabChapters" role="tab" aria-selected="true">Chapters</button>
+      <button class="tab" id="tabBookmarks" role="tab" aria-selected="false">Marks</button>
+      <button class="tab" id="tabReplace" role="tab" aria-selected="false">Replace</button>
+    </div>
+    <button class="icon-btn" data-close-panel title="Close" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="panel__body" id="viewChapters">
+    <div class="search">
+      <input type="search" id="tocSearch" placeholder="Search chapters…" autocomplete="off" spellcheck="false">
+    </div>
+    <p class="hint" id="bookProgress"></p>
+    <ol class="toc" id="tocList"></ol>
+  </div>
+
+  <div class="panel__body" id="viewBookmarks" hidden>
+    <p class="hint">Tap the ribbon in the top bar to save your spot.</p>
+    <ul class="bookmarks" id="bookmarkList"></ul>
+  </div>
+
+  <div class="panel__body" id="viewReplace" hidden>
+    <p class="hint">
+      Select any word or phrase while reading, then tap <strong>Replace…</strong>.
+      Changes apply to every chapter and are reversible — the downloaded files are never modified.
+    </p>
+    <button class="btn btn--block" id="addRuleBtn">+ New replacement</button>
+    <ul class="rules" id="ruleList"></ul>
+  </div>
+</aside>
+
+<!-- Display settings drawer -->
+<aside class="panel panel--right" id="settingsPanel" aria-hidden="true" aria-label="Display settings">
+  <div class="panel__head">
+    <h2>Display</h2>
+    <button class="icon-btn" data-close-panel title="Close" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="panel__body">
+    <section class="field">
+      <label>Theme</label>
+      <div class="swatches" id="themeRow"></div>
+    </section>
+
+    <section class="field" id="customColors" hidden>
+      <label>Custom colours</label>
+      <div class="color-row">
+        <label class="color"><input type="color" id="customBg"><span>Background</span></label>
+        <label class="color"><input type="color" id="customFg"><span>Text</span></label>
+      </div>
+    </section>
+
+    <section class="field">
+      <label>Typeface</label>
+      <div class="seg" id="fontRow"></div>
+    </section>
+
+    <section class="field">
+      <label>Text size <output id="sizeOut"></output></label>
+      <div class="stepper">
+        <button class="step" data-adjust="fontSize" data-delta="-1" aria-label="Smaller text">A<small>-</small></button>
+        <input type="range" id="fontSize" min="14" max="34" step="1">
+        <button class="step" data-adjust="fontSize" data-delta="1" aria-label="Larger text">A<small>+</small></button>
+      </div>
+    </section>
+
+    <section class="field">
+      <label>Line spacing <output id="lineOut"></output></label>
+      <input type="range" id="lineHeight" min="1.3" max="2.4" step="0.05">
+    </section>
+
+    <section class="field">
+      <label>Paragraph spacing <output id="gapOut"></output></label>
+      <input type="range" id="paraGap" min="0.2" max="2" step="0.1">
+    </section>
+
+    <section class="field">
+      <label>Page width</label>
+      <div class="seg" id="widthRow"></div>
+    </section>
+
+    <section class="field">
+      <label>Alignment</label>
+      <div class="seg" id="alignRow"></div>
+    </section>
+
+    <section class="field">
+      <label class="switch">
+        <input type="checkbox" id="continuous">
+        <span>Continuous scroll (chapters flow on without stopping)</span>
+      </label>
+      <label class="switch">
+        <input type="checkbox" id="hideBar">
+        <span>Hide top bar while scrolling down</span>
+      </label>
+    </section>
+
+    <button class="reset" id="resetBtn">Reset to defaults</button>
+    <p class="hint kbd-hint">
+      Keyboard: <kbd>←</kbd> <kbd>→</kbd> chapters · <kbd>t</kbd> contents ·
+      <kbd>s</kbd> display · <kbd>b</kbd> bookmark · <kbd>Esc</kbd> close
+    </p>
+  </div>
+</aside>
+
+<!-- Appears over a text selection -->
+<button class="sel-pill" id="selPill" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M4 12h7M4 17h10M17 14l4 4-4 4"/></svg>
+  Replace…
+</button>
+
+<div class="modal" id="replaceModal" hidden>
+  <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="replaceHeading">
+    <h2 id="replaceHeading">Replace throughout the book</h2>
+
+    <label class="modal__label" for="findInput">Find</label>
+    <input type="text" id="findInput" autocomplete="off" spellcheck="false">
+
+    <label class="modal__label" for="replaceInput">Replace with</label>
+    <input type="text" id="replaceInput" autocomplete="off" spellcheck="false">
+
+    <label class="switch"><input type="checkbox" id="matchCase"><span>Match case exactly</span></label>
+    <p class="hint" id="matchCount"></p>
+
+    <div class="modal__actions">
+      <button class="btn" id="replaceCancel">Cancel</button>
+      <button class="btn btn--primary" id="replaceSave">Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="data/book.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
